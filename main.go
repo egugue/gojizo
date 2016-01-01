@@ -1,23 +1,39 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"github.com/egugue/gojizo/dictionary"
+	"goji.io"
+	"goji.io/pat"
+	"golang.org/x/net/context"
+	"net/http"
+	"strings"
 )
 
 func main() {
-	word := "adorable"
-	//word := "get"
-	//word := "adoable"
+	mux := goji.NewMux()
+	mux.HandleFuncC(pat.Get("/search/:word"), SearchDictionary)
+	http.ListenAndServe(":4000", mux)
+}
+
+func SearchDictionary(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+	setContentType(w)
+
+	encoder := json.NewEncoder(w)
+	word := pat.Param(ctx, "word")
+	word = strings.ToLower(word)
 
 	dicList := dictionary.FindBy(word)
 	dic, isAttended := dicList.GetBy(word)
+
 	if isAttended {
-		fmt.Println(dic)
+		encoder.Encode(dic)
 		return
 	}
 
-	for _, dic := range dicList {
-		fmt.Println(dic)
-	}
+	encoder.Encode(dicList)
+}
+
+func setContentType(w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 }
