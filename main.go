@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/egugue/gojizo/dictionary"
+	"github.com/egugue/gojizo/domain/dictionary"
 	"goji.io"
 	"goji.io/pat"
 	"golang.org/x/net/context"

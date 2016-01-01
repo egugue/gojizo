@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/xml"
-	"github.com/egugue/gojizo/util"
 	"net/url"
 )
 
@@ -10,7 +9,7 @@ func FetchIdList(word string) []string {
 	sdir := searchDicItemResult{}
 
 	url := searchIdListUrl(word)
-	xmldoc := util.FetchBody(url)
+	xmldoc := fetchBody(url)
 	xml.Unmarshal([]byte(xmldoc), &sdir)
 
 	idList := []string{}

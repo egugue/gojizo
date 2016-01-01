@@ -1,7 +1,7 @@
 package dictionary
 
 import (
-	"github.com/egugue/gojizo/dictionary/api"
+	"github.com/egugue/gojizo/infra/api"
 )
 
 func FindBy(word string) DictionaryList {

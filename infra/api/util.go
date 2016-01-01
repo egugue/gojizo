@@ -1,11 +1,11 @@
-package util
+package api
 
 import (
 	"io/ioutil"
 	"net/http"
 )
 
-func FetchBody(url string) string {
+func fetchBody(url string) string {
 	response, _ := http.Get(url)
 	defer response.Body.Close()
 
