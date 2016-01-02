@@ -23,9 +23,19 @@ func SearchDictionary(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	word := pat.Param(ctx, "word")
 	word = strings.ToLower(word)
 
-	dicList := dictionary.FindBy(word)
-	dic, isAttended := dicList.GetBy(word)
+	dicList, e := dictionary.FindBy(word)
+	if e != nil {
+		encoder.Encode(ResError{500, "Internal Server Error"})
+		//TODO: status code
+		return
+	}
+	if dicList == nil {
+		encoder.Encode(ResError{404, "Not Found"})
+		//TODO: status code
+		return
+	}
 
+	dic, isAttended := dicList.GetBy(word)
 	if isAttended {
 		encoder.Encode(dic)
 		return
@@ -36,4 +46,9 @@ func SearchDictionary(ctx context.Context, w http.ResponseWriter, r *http.Reques
 
 func setContentType(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+}
+
+type ResError struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
 }

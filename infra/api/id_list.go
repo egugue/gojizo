@@ -5,19 +5,26 @@ import (
 	"net/url"
 )
 
-func FetchIdList(word string) []string {
+func FetchIdList(word string) ([]string, error) {
 	sdir := searchDicItemResult{}
 
 	url := searchIdListUrl(word)
-	xmldoc := fetchBody(url)
-	xml.Unmarshal([]byte(xmldoc), &sdir)
+	xmldoc, e := fetchBody(url)
+	if e != nil {
+		return nil, e
+	}
+
+	e = xml.Unmarshal([]byte(xmldoc), &sdir)
+	if e != nil {
+		return nil, e
+	}
 
 	idList := []string{}
 	for _, v := range sdir.TitleList.DicItemTitle {
 		idList = append(idList, v.ItemID)
 	}
 
-	return idList
+	return idList, nil
 }
 
 func searchIdListUrl(word string) string {
